@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "406803609665",
+    "firebase_url": "https://warehouse-goodsin-f70d3-default-rtdb.firebaseio.com",
+    "project_id": "warehouse-goodsin-f70d3",
+    "storage_bucket": "warehouse-goodsin-f70d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406803609665:android:9c0ab6dbd19aeec0d46ec0",
+        "android_client_info": {
+          "package_name": "om.example.voiceassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406803609665-b7r74rg35f2dfor5i9ohgfpiompn2047.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBctvknE0Vvta-8dlig0ZORCtwtoG177bg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406803609665-b7r74rg35f2dfor5i9ohgfpiompn2047.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

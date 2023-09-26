@@ -155,7 +155,7 @@ class VoiceAssistantState extends State<VoiceAssistant> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.asset(Assets.imagesImgSiri,height: 120,width: 120,),  // Assuming you have a logo.png file in your assets folder
+                Image.asset(Assets.imagesAppBanner,height: 120,width: 120,),  // Assuming you have a logo.png file in your assets folder
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,

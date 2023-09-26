@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String imagesAppBanner = 'assets/images/app_banner.png';
   static const String imagesImgSiri = 'assets/images/imgSiri.png';
   static const String imagesLottie = 'assets/images/lottie.json';
   static const String imagesStart = 'assets/images/start.json';

@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,11 @@ class VoiceAssistantState extends State<VoiceAssistant> {
   void initState() {
     super.initState();
     _rackDataRef = _database.ref().child('rack_data');
-   // _queryData("43742-0064");
+
+    getByProductCode("43742-0064");
     initSpeechToText();
     initTextToSpeech();
+
 
   }
 
@@ -45,10 +48,19 @@ class VoiceAssistantState extends State<VoiceAssistant> {
     setState(() {});
   }
   void _queryData(String productCode) {
+
     _rackDataRef!
         .orderByChild('ProductCode')
         .equalTo(productCode)
         .once().then((value) {
+      // if (value.snapshot.value != null) {
+      //    Map<dynamic, dynamic> map = value.snapshot.value;
+      //   // Since Realtime Database does not preserve the order of keys in maps,
+      //   // we'll just grab the first entry in the map.
+      //   final Map<String, dynamic> firstEntry = Map.from(map.values.first);
+      //   return Warehouse.fromMap(firstEntry);
+      // }
+
       if (value.snapshot.value != null) {
         try
         {
@@ -189,7 +201,8 @@ class VoiceAssistantState extends State<VoiceAssistant> {
                 const SizedBox(height: 20),
                 speech.isNotListening? InkWell(
                     onTap: (){
-                      _speechRecognitionHandler();
+                      getByProductCode("43742-0064");
+                      //_speechRecognitionHandler();
                     },
                     child: Lottie.asset(Assets.imagesStart,height:200,width: 200)):
                 InkWell(
@@ -205,56 +218,115 @@ class VoiceAssistantState extends State<VoiceAssistant> {
       ),
     );
   }
-}
-class WarehouseEntry {
-  final String customer;
-  final String palletSize;
-  final String productCode;
-  final int totalProduct;
-  final int quantity;
-  final dynamic boxSize; // dynamic type is used as it seems 'nan' indicates a non-integer value
-  final int section;
-  final int pallets;
-  final String rack;
-  final double occupiedSpacePercent;
-  final dynamic totalBox; // dynamic type is used here as well
-  final double freeSpacePercent;
-  final String bay;
-  final String locationType;
+ getByProductCode(String productCode) async {
 
-  WarehouseEntry({
-    required this.customer,
-    required this.palletSize,
-    required this.productCode,
-    required this.totalProduct,
-    required this.quantity,
-    required this.boxSize,
-    required this.section,
-    required this.pallets,
-    required this.rack,
-    required this.occupiedSpacePercent,
-    required this.totalBox,
-    required this.freeSpacePercent,
+    final DatabaseEvent snapshot = await _rackDataRef!
+        .orderByChild('ProductCode')
+        .equalTo(productCode)
+        .once();
+    var data=snapshot.snapshot.children;
+  if(data.isEmpty)
+    {
+
+    }
+  else{
+    data.forEach((element) {
+
+     // log(element.runtimeType.toString());
+      var data = element.value;
+
+      // If the data is a Map, you can cast it and access fields like this:
+      if (data is Map<dynamic, dynamic>) {
+        var someField = data['PalletSize'];
+        log(someField,name: "inmap");
+
+
+      }
+
+      // If the data is a List, you can cast it and iterate through it like this:
+      if (data is List<dynamic>) {
+        for (var item in data) {
+          log(item["PalletSize"],name: "inlist");
+        }
+      }
+
+      // Or if the data is a single value, you can just use it directly:
+      log(data.toString(),name: "el");
+    });
+
+        }
+
+
+}}
+class Warehouse {
+  final String bay;
+  final double boxSize;
+  final String customer;
+  final double freeSpacePercent;
+  final String locationType;
+  final double occupiedSpacePercent;
+  final double palletSize;
+  final int pallets;
+  final String productCode;
+  final int quantity;
+  final String rack;
+  final String section;
+  final int totalBox;
+  final int totalProduct;
+
+  Warehouse({
     required this.bay,
+    required this.boxSize,
+    required this.customer,
+    required this.freeSpacePercent,
     required this.locationType,
+    required this.occupiedSpacePercent,
+    required this.palletSize,
+    required this.pallets,
+    required this.productCode,
+    required this.quantity,
+    required this.rack,
+    required this.section,
+    required this.totalBox,
+    required this.totalProduct,
   });
 
-  factory WarehouseEntry.fromJson(Map<String, dynamic> json) {
-    return WarehouseEntry(
-      customer: json['Customer'],
-      palletSize: json['PalletSize'],
-      productCode: json['ProductCode'],
-      totalProduct: json['TotalProduct'],
-      quantity: json['Quantity'],
-      boxSize: json['BoxSize'],
-      section: json['Section'],
-      pallets: json['Pallets'],
-      rack: json['Rack'],
-      occupiedSpacePercent: json['OccupiedSpacePercent'],
-      totalBox: json['TotalBox'],
-      freeSpacePercent: json['FreeSpacePercent'],
-      bay: json['Bay'],
-      locationType: json['LocationType'],
+  factory Warehouse.fromMap(Map<String, dynamic> map) {
+    return Warehouse(
+      bay: map['Bay'],
+      boxSize: map['BoxSize'].toDouble(),
+      customer: map['Customer'],
+      freeSpacePercent: map['FreeSpacePercent'].toDouble(),
+      locationType: map['LocationType'],
+      occupiedSpacePercent: map['OccupiedSpacePercent'].toDouble(),
+      palletSize: map['PalletSize'].toDouble(),
+      pallets: map['Pallets'],
+      productCode: map['ProductCode'],
+      quantity: map['Quantity'],
+      rack: map['Rack'],
+      section: map['Section'],
+      totalBox: map['TotalBox'],
+      totalProduct: map['TotalProduct'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'Bay': bay,
+      'BoxSize': boxSize,
+      'Customer': customer,
+      'FreeSpacePercent': freeSpacePercent,
+      'LocationType': locationType,
+      'OccupiedSpacePercent': occupiedSpacePercent,
+      'PalletSize': palletSize,
+      'Pallets': pallets,
+      'ProductCode': productCode,
+      'Quantity': quantity,
+      'Rack': rack,
+      'Section': section,
+      'TotalBox': totalBox,
+      'TotalProduct': totalProduct,
+    };
+  }
+
 }
